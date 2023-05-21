@@ -7,7 +7,6 @@ import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
 
-/* worked ??? */
 public class Tp1 {
     public static void main(String[] args) {
         LinkedList<Integer> boxsData = boxsData(args[0]);
