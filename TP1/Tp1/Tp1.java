@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.LinkedList;
-
+/*GOOD JOB !!!!!! */
 public class Tp1 {
     public static void main(String[] args) {
         LinkedList<Integer> boxsData = boxsData(args[0]);
