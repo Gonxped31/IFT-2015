@@ -63,6 +63,7 @@ public class Tp1 {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(nBboiteDansBatiment);
         return nBboiteDansBatiment;
     }
 
@@ -164,23 +165,27 @@ public class Tp1 {
         LinkedList<Double> orderedBuildings = new LinkedList<>();
         LinkedList<Double> ordoredBoxs = new LinkedList<>();
         LinkedList<Double> ordoredDistances = new LinkedList<>();
+        int end = boxs.size();
 
         // Find the smallest distance and its index and update the lists 
-        for (int i = 0; i < distances.size(); ++i) {
+        for (int i = 0; i < end; ++i) {
             double smallestDistance = Collections.min(distances);
+            int smallestIndex = distances.indexOf(smallestDistance);
+
             ordoredDistances.add(smallestDistance);
 
-            int smallesIndex = distances.indexOf(smallestDistance);
-            ordoredBoxs.add(boxs.get(smallesIndex));
+            ordoredBoxs.add(boxs.remove(smallestIndex));
 
+            int index = 2*smallestIndex;
+            orderedBuildings.add(buildings.remove(index));
+            orderedBuildings.add(buildings.remove(index));
 
-            int index = 2*smallesIndex;
-            orderedBuildings.add(buildings.get(index));
-            orderedBuildings.add(buildings.get(index + 1));
+            distances.remove(smallestIndex);
 
-            distances.remove(smallesIndex);
         }
 
+        System.out.println(ordoredBoxs);
+        System.out.println(ordoredDistances.size());
         ordoredLists.add(ordoredDistances);
         ordoredLists.add(ordoredBoxs);
         ordoredLists.add(orderedBuildings);
@@ -257,7 +262,7 @@ public class Tp1 {
             }
 
         }
-        
+
         buildingsVisited.add(buildingVisited);
         ordoredLists.add(buildingsVisited);
         return ordoredLists;
@@ -276,8 +281,12 @@ public class Tp1 {
     // Round a double number passed as parameter to the number of digits passed as parameter as well.
     public static double round(double value, int nDigits) { 
         String pattern = "#.";
-        for (int i = 0; i < nDigits; ++i) {
-            pattern += "#";
+        if (nDigits > 0 ){
+            for (int i = 0; i < nDigits; ++i) {
+                pattern += "#";
+            }
+        } else {
+            pattern = "#";
         }
         DecimalFormat decimalFormat = new DecimalFormat(pattern);
         String roundedNum = decimalFormat.format(value);
@@ -305,7 +314,9 @@ public class Tp1 {
         LinkedList<Integer> boxes = listConverter(updateOrdoredLists.get(1));
         LinkedList<Double> buildings = updateOrdoredLists.get(2);
         LinkedList<Double> buildingsVisitedList = updateOrdoredLists.get(3);
-        int buildingsVisited = Math.floor(buildingsVisitedList.get(0));
+        double buildingsVisited = buildingsVisitedList.get(0);
+        System.out.println(buildingsVisited);
+        int end = distances.size();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(argument2))){
             String truckPositionString  = "Truck position:" + "\t" + "(" + truckPosition.getFirst() + "," + truckPosition.getLast() + ")";
@@ -314,8 +325,8 @@ public class Tp1 {
             writer.newLine();
 
             int j = 1;
-            int k = 0;
-            for (int i = 0; i < buildingsVisited; i+=2) {
+            int i = 0;
+            for (int k = 0; k < buildingsVisited; k++) {
                 String line = "";
                 double dist = distances.get(k);
                 if (dist == 0){
@@ -326,7 +337,7 @@ public class Tp1 {
                 writer.append(line);
                 writer.newLine();
                 j += 2;
-                k++;
+                i+=2;
             }
 
             writer.close();
