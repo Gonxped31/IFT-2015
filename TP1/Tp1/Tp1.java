@@ -63,7 +63,6 @@ public class Tp1 {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(nBboiteDansBatiment);
         return nBboiteDansBatiment;
     }
 
@@ -184,8 +183,6 @@ public class Tp1 {
 
         }
 
-        System.out.println(ordoredBoxs);
-        System.out.println(ordoredDistances.size());
         ordoredLists.add(ordoredDistances);
         ordoredLists.add(ordoredBoxs);
         ordoredLists.add(orderedBuildings);
@@ -315,14 +312,13 @@ public class Tp1 {
         LinkedList<Double> buildings = updateOrdoredLists.get(2);
         LinkedList<Double> buildingsVisitedList = updateOrdoredLists.get(3);
         double buildingsVisited = buildingsVisitedList.get(0);
-        System.out.println(buildingsVisited);
-        int end = distances.size();
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(argument2))){
             String truckPositionString  = "Truck position:" + "\t" + "(" + truckPosition.getFirst() + "," + truckPosition.getLast() + ")";
             writer.append(truckPositionString);
 
             writer.newLine();
+
 
             int j = 1;
             int i = 0;
@@ -331,6 +327,8 @@ public class Tp1 {
                 double dist = distances.get(k);
                 if (dist == 0){
                     line += "Distance:0" + "\t\t\t\t" + "Number of boxes:" + boxes.get(k) + "\t\t\t" + "Postion:" + "(" + buildings.get(i) + "," + buildings.get(j) + ")";
+                } else if (dist >= 10000.0) {
+                    line += "Distance:" + dist + "\t\t" + "Number of boxes:" + boxes.get(k) + "\t\t\t" + "Postion:" + "(" + buildings.get(i) + "," + buildings.get(j) + ")";
                 } else {
                     line += "Distance:" + dist + "\t\t\t" + "Number of boxes:" + boxes.get(k) + "\t\t\t" + "Postion:" + "(" + buildings.get(i) + "," + buildings.get(j) + ")";
                 }
