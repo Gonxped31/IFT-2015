@@ -198,6 +198,8 @@ public class Tp1 {
         int truckMaxCapacity = boxsData.get(1);
         int truckSpaceRemaining = truckMaxCapacity;
         int i = 0;
+        LinkedList<Double> buildingsVisited = new LinkedList<>();
+        double buildingVisited = 0;
         LinkedList<Double> orderedBoxs = ordoredLists.get(1);
 
         while (boxRemaining > 0) {
@@ -217,12 +219,14 @@ public class Tp1 {
                         orderedBoxs.remove(i);
                         orderedBoxs.add(i, 0.0);
                         i++;
+                        buildingVisited++;
                     } else if (element2 >= boxToTransport) {
                         // Update informations and end the algorithm.
                         element2 -= boxToTransport;
                         orderedBoxs.remove(i);
                         orderedBoxs.add(i, element2);
                         boxTransported = boxToTransport;
+                        buildingVisited++;
                         boxRemaining = 0;
                     } else {
                         // End the algorithm.
@@ -235,6 +239,7 @@ public class Tp1 {
                     orderedBoxs.remove(i);
                     orderedBoxs.add(i, element);
                     truckSpaceRemaining = 0;
+                    buildingVisited++;
                     boxRemaining = 0;
     
                 } else {
@@ -243,6 +248,7 @@ public class Tp1 {
                     orderedBoxs.remove(i);
                     orderedBoxs.add(i, element);
                     boxTransported = boxToTransport;
+                    buildingVisited++;
                     boxRemaining = 0;
                 }
             } else {
@@ -251,7 +257,9 @@ public class Tp1 {
             }
 
         }
-
+        
+        buildingsVisited.add(buildingVisited);
+        ordoredLists.add(buildingsVisited);
         return ordoredLists;
 
     }
@@ -296,6 +304,8 @@ public class Tp1 {
         LinkedList<Double> distances = roundList(updateOrdoredLists.get(0));
         LinkedList<Integer> boxes = listConverter(updateOrdoredLists.get(1));
         LinkedList<Double> buildings = updateOrdoredLists.get(2);
+        LinkedList<Double> buildingsVisitedList = updateOrdoredLists.get(3);
+        int buildingsVisited = Math.floor(buildingsVisitedList.get(0));
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(argument2))){
             String truckPositionString  = "Truck position:" + "\t" + "(" + truckPosition.getFirst() + "," + truckPosition.getLast() + ")";
@@ -305,7 +315,7 @@ public class Tp1 {
 
             int j = 1;
             int k = 0;
-            for (int i = 0; i < distances.size(); i+=2) {
+            for (int i = 0; i < buildingsVisited; i+=2) {
                 String line = "";
                 double dist = distances.get(k);
                 if (dist == 0){
