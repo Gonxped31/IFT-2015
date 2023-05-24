@@ -207,10 +207,11 @@ public class Tp1 {
         while (boxRemaining > 0) {
             // Verify if we reached the end of the list.
             if (i != orderedBoxs.size()) {
-                double element = orderedBoxs.get(i);
+                double element = orderedBoxs.get(i); // Boxs in the building
                 // Verify if the number of boxs in this building can fit in the truck.
                 if (element < truckSpaceRemaining) {
                     double element2 = element + boxTransported;
+                    // Verify that the truck is not full and that it can take the boxs in the building
                     if (boxTransported < truckMaxCapacity && element2 < boxToTransport) {
                         // update the informations.
                         boxTransported += element;
