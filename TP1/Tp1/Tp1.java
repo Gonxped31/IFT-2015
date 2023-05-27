@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -23,7 +24,6 @@ public class Tp1 {
     public static LinkedList<Integer> boxsData (String argument1){
         LinkedList<Integer> boxsDatas = new LinkedList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(argument1))){
-
             String line = reader.readLine();
 
             String[] element = line.split(" ", 2);
@@ -97,11 +97,7 @@ public class Tp1 {
     // This method take the number of boxs in each building and the buildings positions and return the position of the truck.
     public static LinkedList<Double> truckPosition(LinkedList<Double> boxs, LinkedList<Double> buildings) {
         LinkedList<Double> truckPositions = new LinkedList<>();
-
-        // This list contains the latitudes of the buildings that contains the most boxes.
         LinkedList<Double> latitudes = new LinkedList<>();
-
-        // This list contains the longitudes of the buildings that contains the most boxes.
         LinkedList<Double> longitudes = new LinkedList<>();
 
         // Find the indexs that contains the most boxes from the boxes list.
@@ -164,15 +160,17 @@ public class Tp1 {
         LinkedList<Double> orderedBuildings = new LinkedList<>();
         LinkedList<Double> ordoredBoxs = new LinkedList<>();
         LinkedList<Double> ordoredDistances = new LinkedList<>();
+
+        ArrayList<Double> arrayDistances = new ArrayList<Double>(distances);
+
         int end = boxs.size();
 
         // Find the smallest distance and its index and update the lists 
         for (int i = 0; i < end; ++i) {
-            double smallestDistance = Collections.min(distances);
-            int smallestIndex = distances.indexOf(smallestDistance);
+            double smallestDistance = Collections.min(arrayDistances);
+            int smallestIndex = arrayDistances.indexOf(smallestDistance);
 
             ordoredDistances.add(smallestDistance);
-
             ordoredBoxs.add(boxs.remove(smallestIndex));
 
             int index = 2*smallestIndex;
@@ -180,18 +178,17 @@ public class Tp1 {
             orderedBuildings.add(buildings.remove(index));
 
             distances.remove(smallestIndex);
+            arrayDistances = new ArrayList<Double>(distances);
 
         }
-
         ordoredLists.add(ordoredDistances);
         ordoredLists.add(ordoredBoxs);
         ordoredLists.add(orderedBuildings);
         return ordoredLists;
-
     }
 
     /* This method is the algorithm used to update the boxes in each buildings visited by the goods-lift(the goods-lift go to building with
-        with the smallest distance.)*/ 
+        with the smallest distance.)*/
     public static LinkedList<LinkedList<Double>> updateOrdoredLists(LinkedList<LinkedList<Double>> ordoredLists, LinkedList<Integer> boxsData) {
         // Informations needed to keep track the progress.
         int boxTransported = 0;
@@ -200,8 +197,8 @@ public class Tp1 {
         int truckMaxCapacity = boxsData.get(1);
         int truckSpaceRemaining = truckMaxCapacity;
         int i = 0;
-        LinkedList<Double> buildingsVisited = new LinkedList<>();
         double buildingVisited = 0;
+        LinkedList<Double> buildingsVisited = new LinkedList<>();
         LinkedList<Double> orderedBoxs = ordoredLists.get(1);
 
         while (boxRemaining > 0) {
