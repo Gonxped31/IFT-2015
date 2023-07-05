@@ -39,4 +39,9 @@ public class Drug {
     public Drug parseDrug(List<String> drug){
         return new Drug(drug.get(0), drug.get(1), drug.get(2));
     }
+
+    public String parseString(){
+        return this.name + "\t" + this.quantity + "\t" + this.expirationDate;
+    }
+
 }

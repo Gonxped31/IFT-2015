@@ -15,7 +15,8 @@ public class Manager {
 
     public void manager(String readingFile, String writingFile){
         List<List<String>> result;
-        while ((result = reader.read(readingFile, actualReaderLine)).size() != 0){
+        while ((result = reader.read(readingFile, actualReaderLine)).size() != 0 && !result.contains(null)){
+            actualReaderLine += result.size();
             System.out.println(result);
             switch (result.get(0).get(0)){
                 case "DATE" -> {
@@ -35,7 +36,6 @@ public class Manager {
                     stockManager();
                 }
             }
-            actualReaderLine += result.size() + 1;
         }
     }
 
@@ -48,14 +48,18 @@ public class Manager {
     }
 
     public void supplyManager(List<List<String>> drugs){
-        //TODO
         drugs.remove(0);
+        int last = drugs.size() - 1;
+        drugs.remove(last);
         List<Drug> drugsToAdd = convertToDrug(drugs);
         stock.add(drugsToAdd);
+        /*List<String> text = new ArrayList<>();
+        text.add("APPROV OK");
+        Writer.write("C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP2\\src\\Tp2\\output.txt", actualWriterLine, text);
+        actualWriterLine += text.size();*/
     }
 
     public List<Drug> convertToDrug(List<List<String>> stringDrugs){
-        stringDrugs.remove(0);
         List<Drug> drugs = new ArrayList<>();
         for (List<String> drug : stringDrugs) {
             drugs.add(drugConvertor.parseDrug(drug));
@@ -65,6 +69,9 @@ public class Manager {
 
     public void stockManager(){
         //TODO
+        for (String drug : stock.getFormatedStock("2023/07/05")) {
+            System.out.println(drug);
+        }
     }
 
 }

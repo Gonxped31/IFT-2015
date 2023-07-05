@@ -47,9 +47,13 @@ public class Reader {
                         result.add(trimmedWords);
                         bool = false;
                     } else {
+                        List<String> end = new ArrayList<>();
+                        end.add("null");
+                        result.add(end);
                         bool = false;
                     }
                 } else {
+                    result.add(null);
                     bool = false;
                 }
             }
