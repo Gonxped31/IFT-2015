@@ -11,7 +11,7 @@ public class Manager {
     private final Writer writer = new Writer();
     private final Drug drugConvertor = new Drug();
     private final Prescription prescriptionConvertor = new Prescription();
-    private Stock stock = new Stock();
+    private final Stock stock = new Stock();
     private String currentDate;
     private int i = 1;
 
@@ -55,7 +55,7 @@ public class Manager {
         int last = drugs.size() - 1;
         drugs.remove(last);
         List<Prescription> prescriptions = convertToPrescription(drugs);
-        stock.update(prescriptions);
+        stock.update(prescriptions, currentDate);
         List<String> listPrescriptions = stock.getPrescriptions();
         System.out.println("PRESCRIPTION " + i);
         for (String prescription : listPrescriptions) {
@@ -74,30 +74,22 @@ public class Manager {
         List<Drug> drugsToAdd = convertToDrug(drugs);
         stock.add(drugsToAdd);
         System.out.println("APPROV OK");
-        /*List<String> text = new ArrayList<>();
-        text.add("APPROV OK");
-        Writer.write("C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP2\\src\\Tp2\\output.txt", actualWriterLine, text);
-        actualWriterLine += text.size();*/
     }
 
     public List<Drug> convertToDrug(List<List<String>> stringDrugs){
         List<Drug> drugs = new ArrayList<>();
-        for (List<String> drug : stringDrugs) {
-            drugs.add(drugConvertor.parseDrug(drug));
-        }
+        stringDrugs.forEach(drug -> drugs.add(drugConvertor.parseDrug(drug)));
         return drugs;
     }
 
     public List<Prescription> convertToPrescription(List<List<String>> stringDrugs){
         List<Prescription> prescriptions = new ArrayList<>();
-        for (List<String> drug : stringDrugs) {
-            prescriptions.add(prescriptionConvertor.parsePrescription(drug));
-        }
+        stringDrugs.forEach(drug -> prescriptions.add(prescriptionConvertor.parsePrescription(drug)));
         return prescriptions;
     }
 
     public void stockManager(){
-        //TODO
+        stock.removeExpiredDrugs(currentDate);
         for (String drug : stock.getFormatedStock(currentDate)) {
             System.out.println(drug);
         }

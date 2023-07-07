@@ -1,19 +1,15 @@
 package Tp2.Utilitaries;
 
-import com.sun.jdi.request.StepRequest;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.TreeMap;
+import java.time.LocalDate;
+import java.util.*;
 
 public class Stock {
-    private TreeMap<String, TreeMap<String, Drug>> stock = new TreeMap<>();
-    private TreeMap<String, String> orders = new TreeMap<>();
-    private List<String> prescriptionStringList = new ArrayList<>();
+    private final TreeMap<String, TreeMap<String, Drug>> stock = new TreeMap<>();
+    private final TreeMap<String, String> orders = new TreeMap<>();
+    private final List<String> prescriptionStringList = new ArrayList<>();
 
     public void add(List<Drug> drugs){
-        for (Drug drug : drugs) {
+        drugs.forEach(drug -> {
             if (stock.containsKey(drug.getName())){
                 updateQuantity(drug);
             } else {
@@ -21,7 +17,7 @@ public class Stock {
                 drugTree.put(drug.getExpirationDate(), drug);
                 stock.put(drug.getName(), drugTree);
             }
-        }
+        });
     }
 
     public void updateQuantity(Drug newDrug){
@@ -29,40 +25,64 @@ public class Stock {
         if (tree.containsKey(newDrug.getExpirationDate())){
             Drug drug = tree.get(newDrug.getExpirationDate());
             int newQuantity = Integer.parseInt(drug.getQuantity()) + Integer.parseInt(newDrug.getQuantity());
-            drug.setQuantity(newQuantity + "");
+            drug.setQuantity(String.valueOf(newQuantity));
         } else {
             tree.put(newDrug.getExpirationDate(), newDrug);
             stock.put(newDrug.getName(), tree);
         }
     }
 
-    public void update(List<Prescription> prescriptions){
-        //TODO: verifier expiration et (date actuelle + repetition)
-        //TODO: trouver un médicament qui respecte les critères (pas juste le premier)
-        for (Prescription prescription : prescriptions) {
+    public void update(List<Prescription> prescriptions, String date){
+        LocalDate currentDate = LocalDate.parse(date);
+
+        prescriptions.forEach(prescription -> {
             String prescriptionName = prescription.getName();
+            LocalDate minDate = currentDate.plusDays(prescription.getQuantity());
             if (stock.containsKey(prescriptionName)){
-                String key = stock.get(prescriptionName).firstEntry().getKey();
-                Drug drug = stock.get(prescriptionName).get(key);
-                int quantity =  Integer.parseInt(drug.getQuantity()) - prescription.getQuantity();
-                if (quantity > 0){
-                    drug.setQuantity(quantity + "");
-                    prescription.setStatus("OK");
-                    prescriptionStringList.add(prescription.parseString());
-                } else if (quantity == 0) {
-                    stock.get(prescriptionName).remove(key, drug);
+                if (validatePrescription(prescription, minDate)){
                     prescription.setStatus("OK");
                     prescriptionStringList.add(prescription.parseString());
                 } else {
-                    updateOrder(prescription, prescriptionName);
+                    updateOrder(prescription);
                 }
             } else {
-                updateOrder(prescription, prescriptionName);
+                updateOrder(prescription);
             }
-        }
+        });
     }
 
-    private void updateOrder(Prescription prescription, String prescriptionName) {
+    public boolean validatePrescription(Prescription prescription, LocalDate minDate) {
+        String prescriptionName = prescription.getName();
+        TreeMap<String, Drug> treeMapList = stock.get(prescriptionName);
+
+        SortedMap<String, Drug> subMap = treeMapList.tailMap(minDate.toString());
+        if (subMap.isEmpty()) {
+            return false;
+        }
+
+        String key = subMap.firstKey();
+        LocalDate convertedDate = LocalDate.parse(key);
+        Drug drug = subMap.get(key);
+
+        if (convertedDate.isEqual(minDate) || convertedDate.isAfter(minDate)) {
+            int newQuantity = Integer.parseInt(drug.getQuantity()) - prescription.getQuantity();
+            if (newQuantity > 0) {
+                drug.setQuantity(String.valueOf(newQuantity));
+            } else if (newQuantity == 0) {
+                removeFromStock(drug);
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public void removeFromStock(Drug drug){
+        stock.get(drug.getName()).remove(drug.getExpirationDate(), drug);
+    }
+
+    private void updateOrder(Prescription prescription) {
+        String prescriptionName = prescription.getName();
         prescription.setStatus("COMMANDE");
         prescriptionStringList.add(prescription.parseString());
         if (!orders.containsKey(prescriptionName)){
@@ -70,36 +90,32 @@ public class Stock {
         } else {
             String drug1 = orders.get(prescriptionName);
             String[] splittedDrug = drug1.split("\t");
-            splittedDrug[1] = Integer.parseInt(splittedDrug[1]) + prescription.getQuantity() + "";
-            String newDrug = "";
+            splittedDrug[1] = String.valueOf(Integer.parseInt(splittedDrug[1]) + prescription.getQuantity());
+            StringBuilder newDrug = new StringBuilder();
             for (String str : splittedDrug) {
-                newDrug += str + "\t";
+                newDrug.append(str).append("\t");
             }
-            orders.put(prescriptionName, newDrug);
+            orders.put(prescriptionName, newDrug.toString());
         }
     }
-
 
     public List<String> getFormatedStock(String currentDate){
         List<String> list = new ArrayList<>();
         list.add("STOCK " + currentDate);
-        List<TreeMap<String, Drug>> treeMapList = new ArrayList<>(stock.values());
         List<Drug> drugs = new ArrayList<>();
-        for (int i = 0; i < treeMapList.size(); i++) {
-            List<Drug> tmpList = new ArrayList<>(treeMapList.get(i).values());
-            for (int j = 0; j < tmpList.size(); j++) {
-                drugs.add(tmpList.get(j));
-            }
-        }
-        for (Drug drug: drugs) {
-            list.add(drug.parseString());
-        }
+
+        stock.values().forEach( stringDrugTreeMap -> {
+            List<Drug> tmpList = new ArrayList<>(stringDrugTreeMap.values());
+            drugs.addAll(tmpList);
+        });
+
+        drugs.forEach(drug -> list.add(drug.parseString()));
+
         return list;
     }
 
     public List<String> getOrders(){
-        List<String> stringOrders = new ArrayList<>(orders.values());
-        return stringOrders;
+        return new ArrayList<>(orders.values());
     }
 
     public void emptyOrder() {
@@ -112,6 +128,16 @@ public class Stock {
 
     public List<String> getPrescriptions(){
         return prescriptionStringList;
+    }
+
+    public void removeExpiredDrugs(String currentDate) {
+        stock.keySet().forEach(name -> {
+            TreeMap<String, Drug> treeMap = stock.get(name);
+            if (!treeMap.isEmpty()) {
+                SortedMap<String, Drug> expiredDrugs = treeMap.headMap(currentDate, true);
+                expiredDrugs.clear();
+            }
+        });
     }
 
 }

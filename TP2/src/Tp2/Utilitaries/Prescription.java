@@ -45,5 +45,4 @@ public class Prescription {
         return this.name + "\t" + this.quantity;
     }
 
-
 }
