@@ -43,8 +43,6 @@ public class Manager {
                 orders.add(date + " Ok");
                 Writer.write(writingFile, orders);
             }
-        } else{
-            //TODO
         }
     }
 

@@ -89,7 +89,6 @@ public class Stock {
             orders.put(prescriptionName ,prescription.parseDateCommandStringFormat());
         } else {
             String drug1 = orders.get(prescriptionName);
-            System.out.println(drug1);
             String[] splittedDrug = drug1.split(" ");
             splittedDrug[1] = String.valueOf(Integer.parseInt(splittedDrug[1]) + prescription.getQuantity());
             StringBuilder newDrug = new StringBuilder();
