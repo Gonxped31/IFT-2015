@@ -1,21 +1,17 @@
 package Tp2.Utilitaries;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Manager {
     private int actualReaderLine = 1;
     private final Reader reader = new Reader();
-    private final Writer writer = new Writer();
     private final Drug drugConvertor = new Drug();
     private final Prescription prescriptionConvertor = new Prescription();
     private final Stock stock = new Stock();
     private String currentDate;
     private int i = 1;
-
 
     public void manager(String readingFile, String writingFile){
         List<List<String>> result;
@@ -30,7 +26,7 @@ public class Manager {
         }
     }
 
-    public void dateManager(List<List<String>> dates, String writingFile){
+    private void dateManager(List<List<String>> dates, String writingFile){
         String date = dates.get(0).get(1);
         if(DateTools.isValid(date)){
             this.currentDate = date;
@@ -46,7 +42,7 @@ public class Manager {
         }
     }
 
-    public void prescriptionManager(List<List<String>> drugs, String writingFile){
+    private void prescriptionManager(List<List<String>> drugs, String writingFile){
         drugs.remove(0);
         int last = drugs.size() - 1;
         drugs.remove(last);
@@ -59,7 +55,7 @@ public class Manager {
         ++i;
     }
 
-    public void supplyManager(List<List<String>> drugs, String writingFile){
+    private void supplyManager(List<List<String>> drugs, String writingFile){
         drugs.remove(0);
         int last = drugs.size() - 1;
         drugs.remove(last);
@@ -70,19 +66,19 @@ public class Manager {
         Writer.write(writingFile, text);
     }
 
-    public List<Drug> convertToDrug(List<List<String>> stringDrugs){
-        List<Drug> drugs = new ArrayList<>();
-        stringDrugs.forEach(drug -> drugs.add(drugConvertor.parseDrug(drug)));
-        return drugs;
+    private List<Drug> convertToDrug(List<List<String>> stringDrugs){
+        return stringDrugs.stream()
+                .map(drugConvertor::parseDrug)
+                .collect(Collectors.toList());
     }
 
-    public List<Prescription> convertToPrescription(List<List<String>> stringDrugs){
-        List<Prescription> prescriptions = new ArrayList<>();
-        stringDrugs.forEach(drug -> prescriptions.add(prescriptionConvertor.parsePrescription(drug)));
-        return prescriptions;
+    private List<Prescription> convertToPrescription(List<List<String>> stringDrugs){
+        return stringDrugs.stream()
+                .map(prescriptionConvertor::parsePrescription)
+                .collect(Collectors.toList());
     }
 
-    public void stockManager(String writingFile){
+    private void stockManager(String writingFile){
         stock.removeExpiredDrugs(currentDate);
         List<String> text = stock.getFormatedStock(currentDate);
         Writer.write(writingFile, text);

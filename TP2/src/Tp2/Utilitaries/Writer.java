@@ -1,7 +1,6 @@
 package Tp2.Utilitaries;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Writer {
@@ -9,17 +8,7 @@ public class Writer {
         try {
             RandomAccessFile randomAccessFile = new RandomAccessFile(fileName, "rw");
             randomAccessFile.seek(randomAccessFile.length());
-            if (textToWrite.size() > 1){
-                textToWrite.forEach(text -> {
-                    try {
-                        randomAccessFile.writeBytes(text + "\n");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                randomAccessFile.writeBytes("\n");
-                randomAccessFile.close();
-            } else if (textToWrite.size() == 1 && textToWrite.get(0).contains("APPROV")){
+            if (textToWrite.size() == 1 && textToWrite.get(0).contains("APPROV")){
                 textToWrite.forEach(text -> {
                     try {
                         randomAccessFile.writeBytes(text + "\n");
@@ -28,7 +17,7 @@ public class Writer {
                     }
                 });
                 randomAccessFile.close();
-            } else {
+            }else {
                 textToWrite.forEach(text -> {
                     try {
                         randomAccessFile.writeBytes(text + "\n");

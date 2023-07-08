@@ -3,6 +3,7 @@ package Tp2.Utilitaries;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Stock {
@@ -11,7 +12,7 @@ public class Stock {
     private final List<String> prescriptionStringList = new ArrayList<>();
 
     public void add(List<Drug> drugs){
-        for (Drug drug : drugs) {
+        drugs.forEach(drug -> {
             if (stock.containsKey(drug.getName())){
                 updateQuantity(drug);
             } else {
@@ -19,7 +20,7 @@ public class Stock {
                 drugTree.put(drug.getExpirationDate(), drug);
                 stock.put(drug.getName(), drugTree);
             }
-        }
+        });
     }
 
     public void updateQuantity(Drug newDrug){
@@ -36,10 +37,9 @@ public class Stock {
 
     public void update(List<Prescription> prescriptions, String date){
         LocalDate currentDate = LocalDate.parse(date);
-        for (Prescription prescription : prescriptions) {
+        prescriptions.forEach(prescription -> {
             String prescriptionName = prescription.getName();
             LocalDate minDate = currentDate.plusDays(prescription.getQuantity());
-            //String currentDateString = currentDate.toString();
             if (stock.containsKey(prescriptionName)){
                 if (validatePrescription(prescription, minDate)){
                     prescription.setStatus("OK");
@@ -50,31 +50,25 @@ public class Stock {
             } else {
                 updateOrder(prescription);
             }
-        }
+        });
     }
 
     public boolean validatePrescription(Prescription prescription, LocalDate minDate){
-        boolean result = false;
         String prescriptionName = prescription.getName();
         TreeMap<String, Drug> treeMapList = stock.get(prescriptionName);
-        List<String> dateList = new ArrayList<>(treeMapList.keySet());
-        for (String date : dateList) {
-            LocalDate convertedDate = LocalDate.parse(date);
-            Drug drug = treeMapList.get(date);
-            if (convertedDate.isEqual(minDate) || convertedDate.isAfter(minDate)){
-                int newQuantity = Integer.parseInt(drug.getQuantity()) - prescription.getQuantity();
-                if (newQuantity > 0){
-                    drug.setQuantity(String.valueOf(newQuantity));
-                    result = true;
-                    break;
-                } else if (newQuantity == 0) {
-                    removeFromStock(drug);
-                    result = true;
-                    break;
-                }
+        SortedMap<String, Drug> subMap = treeMapList.tailMap(minDate.toString());
+        return subMap.entrySet().stream().anyMatch(entry -> {
+            Drug drug = entry.getValue();
+            int newQuantity = Integer.parseInt(drug.getQuantity()) - prescription.getQuantity();
+            if (newQuantity > 0){
+                drug.setQuantity(String.valueOf(newQuantity));
+                return true;
+            } else if (newQuantity == 0) {
+                removeFromStock(drug);
+                return true;
             }
-        }
-        return result;
+            return false;
+        });
     }
 
     public void removeFromStock(Drug drug){
@@ -91,10 +85,7 @@ public class Stock {
             String drug1 = orders.get(prescriptionName);
             String[] splittedDrug = drug1.split(" ");
             splittedDrug[1] = String.valueOf(Integer.parseInt(splittedDrug[1]) + prescription.getQuantity());
-            String newDrug = "";
-            for (String str : splittedDrug) {
-                newDrug += str + " ";
-            }
+            String newDrug = String.join(" ", splittedDrug);
             orders.put(prescriptionName, newDrug.trim());
         }
     }
@@ -104,13 +95,11 @@ public class Stock {
         list.add("STOCK " + currentDate);
         List<TreeMap<String, Drug>> treeMapList = new ArrayList<>(stock.values());
         List<Drug> drugs = new ArrayList<>();
-        for (TreeMap<String, Drug> stringDrugTreeMap : treeMapList) {
+        treeMapList.forEach(stringDrugTreeMap -> {
             List<Drug> tmpList = new ArrayList<>(stringDrugTreeMap.values());
             drugs.addAll(tmpList);
-        }
-        for (Drug drug: drugs) {
-            list.add(drug.parseString());
-        }
+        });
+        drugs.forEach(drug -> list.add(drug.parseString()));
         return list;
     }
 

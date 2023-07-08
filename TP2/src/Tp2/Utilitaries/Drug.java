@@ -1,8 +1,4 @@
 package Tp2.Utilitaries;
-import java.sql.Driver;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Drug {

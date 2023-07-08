@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Reader {
     public List<List<String>> read(String fileName, int startLine) {
@@ -34,16 +35,12 @@ public class Reader {
                     if(!line.contains(";")){
                         String[] words = line.trim().split(":")[0].replaceAll("\\s+",",").split(",");
                         List<String> trimmedWords = new ArrayList<>();
-                        for (int i = 0; i < words.length; i++) {
-                            trimmedWords.add(words[i].trim());
-                        }
+                        IntStream.range(0, words.length).forEach(i -> trimmedWords.add(words[i].trim()));
                         result.add(trimmedWords);
                     } else if (removeSpace(line).length != 1){
                         String[] words = line.trim().split(";")[0].replaceAll("\\s+",",").split(",");
                         List<String> trimmedWords = new ArrayList<>();
-                        for (int i = 0; i < words.length; i++) {
-                            trimmedWords.add(words[i].trim());
-                        }
+                        IntStream.range(0, words.length).forEach(i -> trimmedWords.add(words[i].trim()));
                         result.add(trimmedWords);
                         bool = false;
                     } else {
@@ -66,9 +63,7 @@ public class Reader {
     private static String[] removeSpace(String string) {
         String[] words = string.trim().split(" ");
         String[] array = new String[words.length];
-        for (int i = 0; i < words.length; i++) {
-            array[i] += words[i].trim();
-        }
+        IntStream.range(0, words.length).forEach(i -> array[i] += words[i].trim());
         return array;
     }
 }
