@@ -46,10 +46,10 @@ public class Stock {
                     prescription.setStatus("OK");
                     prescriptionStringList.add(prescription.parseString());  //O(1)
                 } else {
-                    updateOrder(prescription); //O(log n)
+                    updateOrder(prescription); //O(log k)
                 }
             } else {
-                updateOrder(prescription); //O(log n)
+                updateOrder(prescription); //O(log k)
             }
         });
     }
@@ -78,7 +78,7 @@ public class Stock {
         stock.get(medication.getName()).remove(medication.getExpirationDate(), medication); //O(log n)
     }
 
-    //Complexity : O(log n)
+    //Complexity : O(log k)
     private void updateOrder(Prescription prescription) {
         String prescriptionName = prescription.getName(); //O(1)
         prescription.setStatus("COMMANDE");   //O(1)
