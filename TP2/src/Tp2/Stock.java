@@ -83,14 +83,14 @@ public class Stock {
         String prescriptionName = prescription.getName(); //O(1)
         prescription.setStatus("COMMANDE");   //O(1)
         prescriptionStringList.add(prescription.parseString());  //O(1)
-        if (!orders.containsKey(prescriptionName)){  //O(log n)
-            orders.put(prescriptionName ,prescription.parseDateCommandStringFormat().trim());  //O(log n)
+        if (!orders.containsKey(prescriptionName)){  //O(log k)
+            orders.put(prescriptionName ,prescription.parseDateCommandStringFormat().trim());  //O(log k)
         } else {
-            String medication1 = orders.get(prescriptionName);  //O(log n)
+            String medication1 = orders.get(prescriptionName);  //O(log k)
             String[] splittedMedication = medication1.split(" ");  //O(1)
             splittedMedication[1] = String.valueOf(Integer.parseInt(splittedMedication[1]) + prescription.getQuantity()); //O(1)
             String newMedication = String.join(" ", splittedMedication);  //O(1)
-            orders.put(prescriptionName, newMedication.trim()); //O(log n)
+            orders.put(prescriptionName, newMedication.trim()); //O(log k)
         }
     }
 
