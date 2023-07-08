@@ -1,6 +1,5 @@
-package Tp2.Utilitaries;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.List;
 
 public class Writer {

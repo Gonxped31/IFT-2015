@@ -1,18 +1,17 @@
-package Tp2.Utilitaries;
 import java.util.List;
 
-public class Drug {
+public class Medication {
     private String name;
     private String quantity;
     private String expirationDate;
 
-    public Drug(String name, String quantity, String expirationDate){
+    public Medication(String name, String quantity, String expirationDate){
         this.name = name;
         this.quantity = quantity;
         this.expirationDate = expirationDate;
     }
 
-    public Drug(){
+    public Medication(){
 
     }
 
@@ -32,8 +31,8 @@ public class Drug {
         this.quantity = quantity;
     }
 
-    public Drug parseDrug(List<String> drug){
-        return new Drug(drug.get(0), drug.get(1), drug.get(2));
+    public Medication parseDrug(List<String> drug){
+        return new Medication(drug.get(0), drug.get(1), drug.get(2));
     }
 
     public String parseString(){

@@ -1,5 +1,3 @@
-package Tp2.Utilitaries;
-
 import java.util.List;
 
 public class Prescription {
