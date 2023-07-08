@@ -40,7 +40,7 @@ public class Manager {
                 Writer.write(writingFile, orders);
                 stock.emptyOrder();
             } else {
-                orders.add(date + " Ok");
+                orders.add(date + " OK");
                 Writer.write(writingFile, orders);
             }
         }

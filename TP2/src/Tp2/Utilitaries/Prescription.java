@@ -38,7 +38,7 @@ public class Prescription {
     }
 
     public String parseString(){
-        return this.name + " " + this.dose + " " + this.repetition + " " + this.status;
+        return this.name + " " + this.dose + " " + this.repetition + "  " + this.status;
     }
 
     public String parseDateCommandStringFormat(){

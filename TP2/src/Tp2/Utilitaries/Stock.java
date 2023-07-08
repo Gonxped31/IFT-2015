@@ -86,16 +86,16 @@ public class Stock {
         prescription.setStatus("COMMANDE");
         prescriptionStringList.add(prescription.parseString());
         if (!orders.containsKey(prescriptionName)){
-            orders.put(prescriptionName ,prescription.parseDateCommandStringFormat());
+            orders.put(prescriptionName ,prescription.parseDateCommandStringFormat().trim());
         } else {
             String drug1 = orders.get(prescriptionName);
             String[] splittedDrug = drug1.split(" ");
             splittedDrug[1] = String.valueOf(Integer.parseInt(splittedDrug[1]) + prescription.getQuantity());
-            StringBuilder newDrug = new StringBuilder();
+            String newDrug = "";
             for (String str : splittedDrug) {
-                newDrug.append(str).append(" ");
+                newDrug += str + " ";
             }
-            orders.put(prescriptionName, newDrug.toString());
+            orders.put(prescriptionName, newDrug.trim());
         }
     }
 
