@@ -38,11 +38,11 @@ public class Prescription {
     }
 
     public String parseString(){
-        return this.name + "\t" + this.dose + "\t" + this.repetition + "\t" + this.status;
+        return this.name + " " + this.dose + " " + this.repetition + " " + this.status;
     }
 
     public String parseDateCommandStringFormat(){
-        return this.name + "\t" + this.quantity;
+        return this.name + " " + this.quantity;
     }
 
 }

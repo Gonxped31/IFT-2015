@@ -20,12 +20,7 @@ public class Manager {
     public void manager(String readingFile, String writingFile){
         List<List<String>> result;
         while ((result = reader.read(readingFile, actualReaderLine)).size() != 0 && !result.contains(null)){
-            System.out.println("Size :" + result.size());
-            System.out.println(result);
-            System.out.println("actual line before :" + actualReaderLine);
             actualReaderLine += result.size();
-            System.out.println("actual line after :" + actualReaderLine);
-            //System.out.println(result);
             switch (result.get(0).get(0)){
                 case "DATE" -> dateManager(result, writingFile);
                 case "PRESCRIPTION" -> prescriptionManager(result, writingFile);
@@ -41,11 +36,11 @@ public class Manager {
             this.currentDate = date;
             List<String> orders = stock.getOrders();
             if (orders.size() > 0){
-                orders.add(0,"\n" + date + " COMMANDES :");
+                orders.add(0,date + " COMMANDES :");
                 Writer.write(writingFile, orders);
                 stock.emptyOrder();
             } else {
-                orders.add(date + " Ok\n");
+                orders.add(date + " Ok");
                 Writer.write(writingFile, orders);
             }
         } else{
@@ -60,7 +55,7 @@ public class Manager {
         List<Prescription> prescriptions = convertToPrescription(drugs);
         stock.update(prescriptions, currentDate);
         List<String> listPrescriptions = stock.getPrescriptions();
-        listPrescriptions.add(0, "\nPRESCRIPTION " + i);
+        listPrescriptions.add(0, "PRESCRIPTION " + i);
         Writer.write(writingFile, listPrescriptions);
         stock.emptyPrescriptions();
         ++i;

@@ -41,7 +41,7 @@ public class Drug {
     }
 
     public String parseString(){
-        return this.name + "\t" + this.quantity + "\t" + this.expirationDate;
+        return this.name + " " + this.quantity + " " + this.expirationDate;
     }
 
 }
