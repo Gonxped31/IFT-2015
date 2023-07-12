@@ -1,14 +1,9 @@
-package Tp3;
-
-import javax.lang.model.element.NestingKind;
-import java.security.interfaces.EdECKey;
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class Tp3 {
     public static void main(String[] args) {
-
-        List<Map<String, String[]>> reading = Reader.read("C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP3\\Tp3\\testsTP3E19\\carte10.txt");
+        List<Map<String, String[]>> reading = Reader.read(args[0]);
         Map<String, String[]> vertices = reading.get(0);
         Map<String, String[]> edges = reading.get(1);
         List<String> names = Reader.getNames();
@@ -16,7 +11,7 @@ public class Tp3 {
         int numberOfVertices = vertices.size();
         Graph graph = new Graph(numberOfVertices);
 
-        for (int i = 0; i < edges.size(); i++) {
+        IntStream.range(0, edges.size()).forEach(i -> {
             String startValue = list.get(i)[0];
             int startKey = Integer.parseInt(vertices.get(startValue)[0]);
 
@@ -25,25 +20,26 @@ public class Tp3 {
 
             int weight = Integer.parseInt(list.get(i)[2]);
             graph.addEdge(new Vertex(startKey, startValue), new Vertex(endKey, endValue), weight, names.get(i));
-        }
+        });
+
         List<Edge> result = primJarnik(graph);
         int mstWeight = totalWeight(result);
-        Writer.write("C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP3\\Tp3\\output.txt", result, vertices, mstWeight);
+        Writer.write(args[1], result, vertices, mstWeight);
     }
 
-
+    // Complexity : O((|V| + |E|) log |E|)
     public static List<Edge> primJarnik(Graph graph) {
         int numVertices = graph.getNumVertices();
         boolean[] visited = new boolean[numVertices];
-        List<Edge> minimumSpanningTree = new ArrayList<>();
+        List<Edge> mst = new ArrayList<>();
         PriorityQueue<Edge> priorityQueue = new PriorityQueue<>();
 
         int initialVertex = 0;
         visited[initialVertex] = true;
-        priorityQueue.addAll(graph.getAdjacentEdges(initialVertex));
+        priorityQueue.addAll(graph.getAdjacentEdges(initialVertex)); //O(|E|)
 
         while (!priorityQueue.isEmpty()) {
-            Edge currentEdge = priorityQueue.poll();
+            Edge currentEdge = priorityQueue.poll(); //O(|E| log |E|)
             int destination = currentEdge.getDestination().getKey();
 
             if (visited[destination]) {
@@ -51,16 +47,16 @@ public class Tp3 {
             }
 
             visited[destination] = true;
-            minimumSpanningTree.add(currentEdge);
+            mst.add(currentEdge);
 
-            for (Edge edge : graph.getAdjacentEdges(destination)) {
+            graph.getAdjacentEdges(destination).forEach(edge -> { //O(|V|)
                 if (!visited[edge.getDestination().getKey()]) {
-                    priorityQueue.add(edge);
+                    priorityQueue.add(edge); //O(|E| log |E|)
                 }
-            }
+            });
         }
 
-        return minimumSpanningTree;
+        return mst;
     }
 
     public static int totalWeight(List<Edge> result){

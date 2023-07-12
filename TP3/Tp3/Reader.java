@@ -1,12 +1,7 @@
-package Tp3;
-
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.ClientInfoStatus;
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class Reader {
     private static List<String> names = new ArrayList<>();

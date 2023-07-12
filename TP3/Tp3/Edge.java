@@ -1,5 +1,3 @@
-package Tp3;
-
 class Edge implements Comparable<Edge> {
     private Vertex source;
     private Vertex destination;
