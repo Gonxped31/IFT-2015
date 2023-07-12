@@ -1,30 +1,28 @@
 package Tp3;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-
 class Edge implements Comparable<Edge> {
-    private int source;
-    private int destination;
+    private Vertex source;
+    private Vertex destination;
     private int weight;
+    private String name;
 
-    public Edge(int source, int destination, int weight) {
+    public Edge(String name, Vertex source, Vertex destination, int weight) {
         this.source = source;
         this.destination = destination;
         this.weight = weight;
+        this.name = name;
     }
 
-    public int getSource() {
-        return source;
-    }
-
-    public int getDestination() {
+    public Vertex getDestination() {
         return destination;
     }
 
     public int getWeight() {
         return weight;
+    }
+
+    public String toString() {
+        return name + "\t" + source.getValue() + "\t" + destination.getValue() + "\t" + weight;
     }
 
     @Override

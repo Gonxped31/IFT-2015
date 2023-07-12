@@ -16,13 +16,13 @@ class Graph {
         }
     }
 
-    public void addEdge(int source, int destination, int weight) {
-        Edge edge = new Edge(source, destination, weight);
-        adjacencyList.get(source).add(edge);
+    public void addEdge(Vertex source, Vertex destination, int weight, String name) {
+        Edge edge = new Edge(name, source, destination, weight);
+        adjacencyList.get(source.getKey()).add(edge);
 
         // For a non-oriented graph, add the edge in the opposite direction as well
-        Edge reverseEdge = new Edge(destination, source, weight);
-        adjacencyList.get(destination).add(reverseEdge);
+        Edge reverseEdge = new Edge(name, destination, source, weight);
+        adjacencyList.get(destination.getKey()).add(reverseEdge);
     }
 
     public List<Edge> getAdjacentEdges(int vertex) {
