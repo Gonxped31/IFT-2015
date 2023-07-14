@@ -1,3 +1,5 @@
+package Tp3;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +19,10 @@ class Graph {
     public void addEdge(Vertex source, Vertex destination, int weight, String name) {
         Edge edge = new Edge(name, source, destination, weight);
         adjacencyList.get(source.getKey()).add(edge);
+    }
 
-        // Adding the reversed edge because the graph is not oriented.
+    // Adding the reversed edge because the graph is not oriented.
+    public void addReversedEdges(Vertex source, Vertex destination, int weight, String name) {
         Edge reverseEdge = new Edge(name, destination, source, weight);
         adjacencyList.get(destination.getKey()).add(reverseEdge);
     }

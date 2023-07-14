@@ -1,3 +1,5 @@
+package Tp3;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -5,15 +7,16 @@ import java.util.*;
 
 public class Reader {
     private static List<String> names = new ArrayList<>();
-    public static List<Map<String, String[]>> read(String fileName){
-        List<Map<String, String[]>> result = new ArrayList<>();
-        Map<String, String[]> vertices = new LinkedHashMap<>();
-        Map<String, String[]> edges = new LinkedHashMap<>();
+    private static Map<String ,String[]> edges;
+    private static Map<String ,String> vertices;
+    public static void read(String fileName){
+        vertices = new TreeMap<>();
+        edges = new LinkedHashMap<>();
         int i = 0;
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
             String line;
             while (!(line = reader.readLine()).contains("---")){
-                vertices.put(line.trim(), new String[]{i + ""});
+                vertices.put(line.trim(), i + "");
                 ++i;
             }
 
@@ -28,13 +31,17 @@ public class Reader {
                 ++j;
             }
 
-            result.add(vertices);
-            result.add(edges);
-
         } catch (IOException e){
             e.printStackTrace();
         }
-        return result;
+    }
+
+    public static Map<String, String> getVertices() {
+        return vertices;
+    }
+
+    public static Map<String, String[]> getEdges() {
+        return edges;
     }
 
     public static List<String> getNames() {

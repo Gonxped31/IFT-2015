@@ -1,3 +1,5 @@
+package Tp3;
+
 class Edge implements Comparable<Edge> {
     private Vertex source;
     private Vertex destination;
@@ -9,6 +11,10 @@ class Edge implements Comparable<Edge> {
         this.destination = destination;
         this.weight = weight;
         this.name = name;
+    }
+
+    public Vertex getSource() {
+        return source;
     }
 
     public Vertex getDestination() {
