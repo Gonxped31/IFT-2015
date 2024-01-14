@@ -1,12 +1,9 @@
-package Tp3;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vertex implements Comparable<Vertex> {
+public class Vertex {
     private int key;
     private String value;
-    private int distance;
     Map<Integer, String> vertex = new HashMap<>();
     public Vertex(int key, String value){
         this.key = key;
@@ -20,10 +17,5 @@ public class Vertex implements Comparable<Vertex> {
 
     public String getValue() {
         return value;
-    }
-
-    @Override
-    public int compareTo(Vertex vertex) {
-        return Integer.compare(distance, vertex.distance);
     }
 }

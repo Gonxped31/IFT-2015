@@ -1,5 +1,3 @@
-package Tp3;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,7 +14,7 @@ public class Reader {
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))){
             String line;
             while (!(line = reader.readLine()).contains("---")){
-                vertices.put(line.trim(), i + "");
+                vertices.put(line.trim(), String.valueOf(i));
                 ++i;
             }
 
@@ -26,7 +24,7 @@ public class Reader {
                 arr[0] = arr[0].trim();
                 arr[1] = arr[1].split(";")[0].trim();
                 String[] edgesArr = arr[1].split(" ");
-                edges.put(j + "", edgesArr);
+                edges.put(String.valueOf(j), edgesArr);
                 names.add(arr[0]);
                 ++j;
             }

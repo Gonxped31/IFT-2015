@@ -1,14 +1,8 @@
-package Tp3;
-
-import java.nio.file.SecureDirectoryStream;
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class Tp3 {
     public static void main(String[] args) {
-        args = new String[2];
-        args[0] = "C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP3\\Tp3\\testsTP3E19\\carte1.txt";
-        args[1] = "C:\\Users\\Samir\\Documents\\GitHub\\IFT-2015\\TP3\\Tp3\\output.txt";
         Reader.read(args[0]);
         Map<String, String> vertices = Reader.getVertices();
         Map<String, String[]> edges = Reader.getEdges();
@@ -19,16 +13,11 @@ public class Tp3 {
 
         IntStream.range(0, edges.size()).forEach(i -> {
             String startValue = list.get(i)[0];
+            int startKey = Integer.parseInt(vertices.get(startValue));
             String endValue = list.get(i)[1];
-            graph.addEdge(new Vertex(Integer.parseInt(vertices.get(startValue)),startValue), new Vertex(Integer.parseInt(vertices.get(endValue)),
-                    endValue), Integer.parseInt(list.get(i)[2]), names.get(i));
-        });
-
-        IntStream.range(0, edges.size()).forEach(i -> {
-            String startValue = list.get(i)[0];
-            String endValue = list.get(i)[1];
-            graph.addReversedEdges(new Vertex(Integer.parseInt(vertices.get(startValue)), startValue), new Vertex(Integer.parseInt(vertices.get(endValue)),
-                    endValue), Integer.parseInt(list.get(i)[2]), names.get(i));
+            int endKey = Integer.parseInt(vertices.get(endValue));
+            int weight = Integer.parseInt(list.get(i)[2]);
+            graph.addEdge(new Vertex(startKey, startValue), new Vertex(endKey, endValue), weight, names.get(i));
         });
 
         List<Edge> result = orderEdges(primJarnik(graph));
@@ -38,6 +27,7 @@ public class Tp3 {
 
     // Complexity : O((|V| + |E|) log |E|)
     public static List<Edge> primJarnik(Graph graph) {
+
         int numVertices = graph.getNumVertices();
         boolean[] visited = new boolean[numVertices];
         List<Edge> mst = new ArrayList<>();
@@ -59,7 +49,6 @@ public class Tp3 {
             mst.add(currentEdge);
 
             graph.getAdjacentEdges(destination).forEach(edge -> { //O(|V|)
-                System.out.println(edge.toString());
                 if (!visited[edge.getDestination().getKey()]) {
                     priorityQueue.add(edge); //O(|E| log |E|)
                 }
@@ -71,17 +60,12 @@ public class Tp3 {
 
     public static List<Edge> orderEdges(List<Edge> edgeList){
         Map<String, Map<String, Edge>> map = new TreeMap<>();
-        List<Edge> orderedEdges = new ArrayList<Edge>();
+        List<Edge> orderedEdges = new ArrayList<>();
 
         edgeList.forEach(edge -> {
             String key = edge.getSource().getValue();
-            if (map.containsKey(key)){
-                map.get(key).put(edge.getDestination().getValue(), edge);
-            } else {
-                Map<String, Edge> tmpMap = new TreeMap<>();
-                tmpMap.put(edge.getDestination().getValue(), edge);
-                map.put(edge.getSource().getValue(), tmpMap);
-            }
+            map.computeIfAbsent(key, func -> new TreeMap<>())
+                    .put(edge.getDestination().getValue(), edge);
         });
 
         List<Map<String, Edge>> list = new ArrayList<>(map.values());
